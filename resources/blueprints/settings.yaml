@@ -1,0 +1,298 @@
+tabs:
+  general:
+    display: General
+    sections:
+      - fields:
+          - handle: enabled
+            field:
+              type: toggle
+              display: Enabled
+              default: true
+          - handle: site_url
+            field:
+              type: text
+              display: Site URL
+              instructions: Leave empty to use the app URL.
+          - handle: include_global_schema
+            field:
+              type: toggle
+              display: Include Global Schema by Default
+              default: true
+          - handle: pretty_print
+            field:
+              type: toggle
+              display: Pretty Print JSON
+              default: false
+  global_schema:
+    display: Global Schema
+    sections:
+      - fields:
+          - handle: global_schema
+            field:
+              type: replicator
+              display: Global Schema
+              instructions: Add site-wide JSON-LD objects. Each set renders one global Schema.org node into the @graph.
+              full_width_setting: true
+              button_label: Add Global Schema
+              collapse: true
+              sets:
+                organization:
+                  display: Organization
+                  fields:
+                    - handle: name
+                      field:
+                        type: text
+                        display: Name
+                        width: 100
+                    - handle: url
+                      field:
+                        type: text
+                        display: URL
+                        width: 100
+                    - handle: logo
+                      field:
+                        type: assets
+                        display: Logo
+                        max_files: 1
+                        width: 100
+                    - handle: same_as
+                      field:
+                        type: list
+                        display: Same As URLs
+                website:
+                  display: WebSite
+                  fields:
+                    - handle: name
+                      field:
+                        type: text
+                        display: Name
+                        width: 100
+                    - handle: url
+                      field:
+                        type: text
+                        display: URL
+                        width: 100
+                professional_service:
+                  display: ProfessionalService
+                  fields:
+                    - handle: name
+                      field:
+                        type: text
+                        display: Name
+                        width: 100
+                    - handle: url
+                      field:
+                        type: text
+                        display: URL
+                        width: 100
+                    - handle: logo
+                      field:
+                        type: assets
+                        display: Logo
+                        max_files: 1
+                        width: 100
+                    - handle: image
+                      field:
+                        type: assets
+                        display: Image
+                        max_files: 1
+                        width: 100
+                    - handle: telephone
+                      field:
+                        type: text
+                        display: Telephone
+                        width: 100
+                    - handle: email
+                      field:
+                        type: text
+                        display: Email
+                        width: 100
+                    - handle: price_range
+                      field:
+                        type: text
+                        display: Price Range
+                        width: 100
+                    - handle: area_served
+                      field:
+                        type: list
+                        display: Area Served
+                        width: 100
+                    - handle: same_as
+                      field:
+                        type: list
+                        display: Same As URLs
+                    - handle: address
+                      field:
+                        type: group
+                        display: Address
+                        fields:
+                          - handle: street_address
+                            field:
+                              type: text
+                              display: Street Address
+                              width: 100
+                          - handle: address_locality
+                            field:
+                              type: text
+                              display: Locality
+                              width: 100
+                          - handle: address_region
+                            field:
+                              type: text
+                              display: Region
+                              width: 100
+                          - handle: postal_code
+                            field:
+                              type: text
+                              display: Postal Code
+                              width: 100
+                          - handle: address_country
+                            field:
+                              type: text
+                              display: Country
+                              width: 100
+                local_business:
+                  display: LocalBusiness
+                  fields:
+                    - handle: name
+                      field:
+                        type: text
+                        display: Name
+                        width: 100
+                    - handle: url
+                      field:
+                        type: text
+                        display: URL
+                        width: 100
+                    - handle: logo
+                      field:
+                        type: assets
+                        display: Logo
+                        max_files: 1
+                        width: 100
+                    - handle: image
+                      field:
+                        type: assets
+                        display: Image
+                        max_files: 1
+                        width: 100
+                    - handle: telephone
+                      field:
+                        type: text
+                        display: Telephone
+                        width: 100
+                    - handle: email
+                      field:
+                        type: text
+                        display: Email
+                        width: 100
+                    - handle: price_range
+                      field:
+                        type: text
+                        display: Price Range
+                        width: 100
+                    - handle: same_as
+                      field:
+                        type: list
+                        display: Same As URLs
+                    - handle: address
+                      field:
+                        type: group
+                        display: Address
+                        fields:
+                          - handle: street_address
+                            field:
+                              type: text
+                              display: Street Address
+                              width: 100
+                          - handle: address_locality
+                            field:
+                              type: text
+                              display: Locality
+                              width: 100
+                          - handle: address_region
+                            field:
+                              type: text
+                              display: Region
+                              width: 100
+                          - handle: postal_code
+                            field:
+                              type: text
+                              display: Postal Code
+                              width: 100
+                          - handle: address_country
+                            field:
+                              type: text
+                              display: Country
+                              width: 100
+                other:
+                  display: Other / Custom JSON-LD
+                  fields:
+                    - handle: json_template
+                      field:
+                        type: textarea
+                        display: JSON-LD Template
+                        instructions: Provide a JSON object. Antlers variables from the current page context may be used.
+  collections:
+    display: Collections
+    sections:
+      - fields:
+          - handle: collection_schemas
+            field:
+              type: replicator
+              full_width_setting: true
+              collapse: true
+              display: Collection Schemas
+              instructions: Add one or more entry-level schema objects. Each set applies to the selected collection.
+              button_label: Add Collection Schema
+              sets:
+                schema:
+                  display: Schema
+                  fields:
+                    - handle: collection
+                      field:
+                        type: collections
+                        display: Collection
+                        max_items: 1
+                        width: 100
+                        validate: required
+                    - handle: schema_type
+                      field:
+                          type: select
+                          options:
+                              - key: Article
+                                value: Article
+                              - key: NewsArticle
+                                value: NewsArticle
+                              - key: Event
+                                value: Event
+                              - key: Product
+                                value: Product
+                              - key: Organization
+                                value: Organization
+                              - key: CreativeWork
+                                value: CreativeWork
+                              - key: other
+                                value: Other
+                          display: Type
+                    - handle: schema_type_custom
+                      field:
+                          type: text
+                          display: Custom Type
+                          instructions: Set a custom schema type if "Other" is selected above.
+                    - handle: mappings
+                      field:
+                        type: grid
+                        display: Field Mappings
+                        add_row: Add Field
+                        fields:
+                            - handle: property
+                              field:
+                                type: text
+                                display: Property
+                                instructions: The schema.org/JSON-LD property.
+                            - handle: value
+                              field:
+                                  type: text
+                                  display: Value
+                                  instructions: Value of the property. Support Antlers. Has the context of the entry.

@@ -1,0 +1,40 @@
+{
+    "name": "grizzlypumpkin/statamic-json-ld",
+    "description": "Configure and render JSON-LD schema for Statamic sites.",
+    "type": "package",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "GrizzlyPumpkin\\StatamicJsonLd\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "GrizzlyPumpkin\\StatamicJsonLd\\Tests\\": "tests"
+        }
+    },
+    "require": {
+        "php": "^8.3",
+        "statamic/cms": "^6.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^10.0",
+        "phpunit/phpunit": "^11.0"
+    },
+    "extra": {
+        "statamic": {
+            "name": "JSON-LD",
+            "description": "Configure and render JSON-LD schema for Statamic sites."
+        },
+        "laravel": {
+            "providers": [
+                "GrizzlyPumpkin\\StatamicJsonLd\\ServiceProvider"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
