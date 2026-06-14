@@ -18,6 +18,12 @@ tabs:
               type: toggle
               display: Include Global Schema by Default
               default: true
+          - handle: include_breadcrumb_schema
+            field:
+              type: toggle
+              display: Include Breadcrumb Schema
+              instructions: Automatically render BreadcrumbList schema for entries in structured collections.
+              default: false
           - handle: pretty_print
             field:
               type: toggle

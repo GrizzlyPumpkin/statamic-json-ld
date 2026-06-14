@@ -84,6 +84,7 @@ class SettingsRepository
             'site_url' => null,
             'pretty_print' => false,
             'include_global_schema' => true,
+            'include_breadcrumb_schema' => false,
             'global_schema' => [],
             'collection_schemas' => [],
         ];
