@@ -1,10 +1,10 @@
 <?php
 
-namespace GrizzlyPumpkin\StatamicJsonLd\Support;
+namespace GrizzlyPumpkin\StatamicJsonLd\Renderers;
 
 class JsonLdRenderer
 {
-    public function script(array $schema, bool $pretty = false): string
+    public function script(array $schema): string
     {
         $json = json_encode(
             $schema,
@@ -14,7 +14,6 @@ class JsonLdRenderer
                 | JSON_HEX_AMP
                 | JSON_HEX_APOS
                 | JSON_HEX_QUOT
-                | ($pretty ? JSON_PRETTY_PRINT : 0)
         );
 
         if ($json === false) {

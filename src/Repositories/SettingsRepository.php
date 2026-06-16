@@ -27,6 +27,11 @@ class SettingsRepository
         return $this->settings;
     }
 
+    public function boolean(string $key, bool $default = false): bool
+    {
+        return filter_var($this->get($key), FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE) ?? $default;
+    }
+
     public function collectionConfigs(string $handle): array
     {
         return collect($this->get('collection_schemas'))

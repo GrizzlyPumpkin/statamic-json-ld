@@ -11,6 +11,6 @@ class JsonLd extends Tags
 
     public function index(): string
     {
-        return app(SchemaManager::class)->script($this->context, $this->params);
+        return app(SchemaManager::class)->render($this->context);
     }
 }

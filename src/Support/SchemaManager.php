@@ -2,17 +2,18 @@
 
 namespace GrizzlyPumpkin\StatamicJsonLd\Support;
 
+use Statamic\Fields\Value;
+use Illuminate\Support\Str;
+use Statamic\Facades\Antlers;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Str;
 use Statamic\Contracts\Entries\Entry as EntryContract;
-use Statamic\Facades\Antlers;
-use Statamic\Fields\Value;
+use GrizzlyPumpkin\StatamicJsonLd\Renderers\JsonLdRenderer;
+use GrizzlyPumpkin\StatamicJsonLd\Repositories\SettingsRepository;
 
 class SchemaManager
 {
-    // TODO: Replace this to work like the collections
-    private const GLOBAL_TYPES = [
+    private const array GLOBAL_TYPES = [
         'organization' => 'Organization',
         'website' => 'WebSite',
         'professional_service' => 'ProfessionalService',
@@ -27,35 +28,33 @@ class SchemaManager
     ) {
     }
 
-    public function script(mixed $context, mixed $params): string
+    public function render(mixed $context): string
     {
         $settings = $this->settings->get();
 
-        if ($this->boolean($settings['enabled'] ?? true) === false) {
+        if (!$this->settings->boolean('enabled')) {
             return '';
         }
 
-        $pretty = $this->boolean($this->param($params, 'pretty', $settings['pretty_print'] ?? false));
-        $include = $this->normaliseInclude($this->param($params, 'include', 'all'));
-        $entry = $this->entries->resolve($context, $this->param($params, 'entry'));
+        $entry = $this->entries->resolve($context);
         $collectionConfigs = $entry ? $this->collectionConfigs($entry) : [];
-        $breadcrumb = $entry && $this->shouldIncludeEntry($include) && $this->boolean($settings['include_breadcrumb_schema'] ?? false)
+        $breadcrumb = $entry && $this->settings->boolean('include_breadcrumb_schema')
             ? $this->breadcrumbNode($entry)
             : null;
-        $graph = [];
 
-        if ($this->shouldIncludeGlobal($include, $settings, $collectionConfigs)) {
-            $graph = $this->globalNodes($settings, $context, $entry);
+        $graph = $this->globalNodes($settings, $context, $entry);
+
+        if ($entry) {
+            foreach ($collectionConfigs as $config) {
+                $graph = array_merge(
+                    $graph,
+                    $this->entryNodes($entry, $config, $settings, $context, $breadcrumb['@id'] ?? null)
+                );
+            }
         }
 
-        if ($entry && $this->shouldIncludeEntry($include)) {
-            foreach ($collectionConfigs as $config) {
-                $graph = array_merge($graph, $this->entryNodes($entry, $config, $settings, $context, $breadcrumb['@id'] ?? null));
-            }
-
-            if ($breadcrumb) {
-                $graph[] = $breadcrumb;
-            }
+        if ($breadcrumb) {
+            $graph[] = $breadcrumb;
         }
 
         $graph = $this->mapper->prune($graph);
@@ -67,7 +66,7 @@ class SchemaManager
         return $this->renderer->script([
             '@context' => 'https://schema.org',
             '@graph' => $graph,
-        ], $pretty);
+        ]);
     }
 
     private function globalNodes(array $settings, mixed $context, ?EntryContract $entry): array
@@ -501,37 +500,6 @@ class SchemaManager
         return [$decoded];
     }
 
-    private function normaliseInclude(mixed $include): string
-    {
-        $include = strtolower((string) $include);
-
-        return in_array($include, ['all', 'global', 'entry'], true) ? $include : 'all';
-    }
-
-    private function shouldIncludeGlobal(string $include, array $settings, array $collectionConfigs): bool
-    {
-        if (! in_array($include, ['all', 'global'], true)) {
-            return false;
-        }
-
-        if ($this->boolean($settings['include_global_schema'] ?? true) === false) {
-            return false;
-        }
-
-        foreach ($collectionConfigs as $config) {
-            if ($this->boolean($config['include_global_schema'] ?? true) === false) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private function shouldIncludeEntry(string $include): bool
-    {
-        return in_array($include, ['all', 'entry'], true);
-    }
-
     private function collectionConfigs(EntryContract $entry): array
     {
         $collection = method_exists($entry, 'collectionHandle')
@@ -672,19 +640,6 @@ class SchemaManager
     private function setType(array $config): string
     {
         return (string) ($config['type'] ?? '');
-    }
-
-    private function param(mixed $params, string $key, mixed $default = null): mixed
-    {
-        if (is_array($params)) {
-            return $params[$key] ?? $default;
-        }
-
-        if (is_object($params) && method_exists($params, 'get')) {
-            return $params->get($key, $default);
-        }
-
-        return $default;
     }
 
     private function boolean(mixed $value): bool
