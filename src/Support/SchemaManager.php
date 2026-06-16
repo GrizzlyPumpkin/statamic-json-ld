@@ -29,7 +29,7 @@ class SchemaManager
 
     public function script(mixed $context, mixed $params): string
     {
-        $settings = $this->settings->all();
+        $settings = $this->settings->get();
 
         if ($this->boolean($settings['enabled'] ?? true) === false) {
             return '';
@@ -38,7 +38,7 @@ class SchemaManager
         $pretty = $this->boolean($this->param($params, 'pretty', $settings['pretty_print'] ?? false));
         $include = $this->normaliseInclude($this->param($params, 'include', 'all'));
         $entry = $this->entries->resolve($context, $this->param($params, 'entry'));
-        $collectionConfigs = $entry ? $this->collectionConfigs($entry, $settings) : [];
+        $collectionConfigs = $entry ? $this->collectionConfigs($entry) : [];
         $breadcrumb = $entry && $this->shouldIncludeEntry($include) && $this->boolean($settings['include_breadcrumb_schema'] ?? false)
             ? $this->breadcrumbNode($entry)
             : null;
@@ -532,13 +532,13 @@ class SchemaManager
         return in_array($include, ['all', 'entry'], true);
     }
 
-    private function collectionConfigs(EntryContract $entry, array $settings): array
+    private function collectionConfigs(EntryContract $entry): array
     {
         $collection = method_exists($entry, 'collectionHandle')
             ? $entry->collectionHandle()
             : (method_exists($entry, 'collection') ? $entry->collection()?->handle() : null);
 
-        return $collection ? $this->settings->collectionConfigs($collection, $settings) : [];
+        return $collection ? $this->settings->collectionConfigs($collection) : [];
     }
 
     private function entryUrl(EntryContract $entry): string
