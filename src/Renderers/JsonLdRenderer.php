@@ -4,16 +4,20 @@ namespace GrizzlyPumpkin\StatamicJsonLd\Renderers;
 
 class JsonLdRenderer
 {
-    public function script(array $schema): string
+    public function script(array $graph, array $data): string
     {
         $json = json_encode(
-            $schema,
+            [
+                '@context' => 'https://schema.org',
+                '@graph' => array_map(fn ($item) => $item->renderToArray($data), $graph),
+            ],
             JSON_UNESCAPED_SLASHES
                 | JSON_UNESCAPED_UNICODE
                 | JSON_HEX_TAG
                 | JSON_HEX_AMP
                 | JSON_HEX_APOS
                 | JSON_HEX_QUOT
+                | JSON_PRETTY_PRINT
         );
 
         if ($json === false) {
